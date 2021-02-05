@@ -1,123 +1,134 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-  <h2 v-if="num === 0">0</h2>
-  <h2 v-else-if="num < 0">-</h2>
-  <h2 v-else-if="num > 0">+</h2>
-  <h2 v-else>#0</h2>
+  <!-- Props -->
+  <Greet :name="name" :hero-name="channel" />
+  <Greet name="Bruce" hero-name="Batman" />
+  <Greet name="Clark" hero-name="Superman" />
+  <Greet name="Diana" hero-name="Wonder Woman" />
 
-  <template v-if="display">
-    <h2>M</h2>
-    <h2>A</h2>
-    <h2>T</h2>
-  </template>
-  <h2 v-show="showElement">Using v-show</h2> <!-- show and hide by css property -->
-  <h2 v-if="showElement">Using v-if</h2>
-  <h2 v-for="(name, index) in names" :key="name">{{ index }} {{ name }}</h2>
-  <h2 v-for="(name) in fullNames" :key="name">{{ name.first }} {{ name.last }}</h2>
-  <div v-for="actor in actors" :key="actor.name">
-    <h2>{{ actor.name }}</h2>
-    <h3 v-for="movie in actor.movies" :key="movie">{{ movie }}</h3>
-  </div>
-  <h2 v-for="(name) in fullNames" :key="name">{{ name.first }} {{ name.last }}</h2>
-  <h2 v-for="(value, key, index) in myInfo" :key="value">{{ index }} {{ key }} {{ value }}</h2>
-  <template v-for="name in names" :key="name">
-    <h2>{{ name }}</h2>
-    <br>
-  </template>
+  <Article id="my-article" :likes="50" :isPublished="true" />
 
-  <div>{{ name }}</div>
-  <div v-text="name"></div>
-  <div v-html="name"></div>
-  <h2 v-bind:id="headingID">Heading</h2>
-  <button v-bind:disabled="isDisabled">Bind</button>
-  <h2 class="underline" v-bind:class="status">Underline text</h2>
-  <h2 v-bind:class="isPromoted && 'promoted'">Promoted movie</h2>
-  <h2 v-bind:class="isSoldout ? 'sold-out' : 'new'">Soldout? movie</h2>
-  <h2 v-bind:class="['new', 'promoted']">Newly promoted movie</h2>
-  <h2 v-bind:class="[isPromoted && 'promoted', isSoldout ? 'sold-out' : 'new']">Array condition movie</h2>
+  <!-- Provide/ Inject -->
+  <h3>App component {{ name }}</h3>
+  <ComponentC />
 
-  <h2 v-bind:style="{
-    color: highlightColor,
-    // 'font-size': headerSize + 'px'
-    fontSize: headerSize + 'px',
-    padding: '20px'
-  }">Inline Style</h2>
+  <!-- Events -->
+  <button @click="showPopup = true">Show Popup</button>
+  <Popup v-show="showPopup" @close="closePopup" />
+  <!-- <input type="text" v-model="name"> -->
+  <Input v-model="username" /> <!-- Vue JS 3 Tutorial - 36 - Components and v-model + Vue devtool-->
 
-  <h2 v-bind:style="headerStyleObject">Style Object</h2>
-  <h2 v-bind:style="[baseStyleObject, successStyleObject]">Success Style</h2>
-  <h2 v-bind:style="[baseStyleObject, dangerStyleObject]">Danger Style</h2>
+  <!-- Slots -->
+  <Card></Card>
+  <Card>Card Content</Card>
+  <Card><img src="https://picsum.photos/200" /></Card>
+
+  <Card>
+    <template v-slot:header>
+      <h3>Header</h3>
+    </template>
+    <template v-slot:default>
+      <img src="https://picsum.photos/200" />
+    </template>
+    <template v-slot:footer>
+      <button>View Details</button>
+    </template>
+  </Card>
+
+  <NameList><!-- Vue JS 3 Tutorial - 39 - Slots Props -->
+    <template v-slot:default="slotProps">
+      {{ slotProps.firstName }} {{ slotProps.lastName }}
+    </template>
+  </NameList>
+
+  <NameList>
+    <template v-slot:default="slotProps">
+      {{ slotProps.lastName }}, {{ slotProps.firstName }}
+    </template>
+  </NameList>
+
+  <NameList>
+    <template v-slot:default="slotProps">
+      {{ slotProps.firstName }} 
+    </template>
+  </NameList><!-- Vue JS 3 Tutorial - 39 - Slots Props -->
+
+  <!-- Vue JS 3 Tutorial - 40 - Component Styles -->
+  <h4>App component Text</h4>
+  <ChildStyles>
+    <h4>ChildStyles component Text</h4>
+  </ChildStyles>
+  <!-- Module CSS Learn More -->
+
+  <!-- Dynamic Components -->
+  <button @click="activeTab = 'TabA'">Tab A</button>
+  <button @click="activeTab = 'TabB'">Tab B</button>
+  <button @click="activeTab = 'TabC'">Tab C</button>
+
+  <keep-alive>
+    <component :is="activeTab"></component>
+  </keep-alive>
+
+  <!-- Teleport Component https://codesandbox.io/s/vishwas-vue-teleport-4z93t -->
+  <teleport to="#portal-root">
+    <Portal />
+  </teleport>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
+import Article from './components/Article.vue'
+import Greet from './components/Greet.vue'
+import ComponentC from './components/ComponentC.vue'
+import Popup from './components/Popup.vue'
+import Input from './components/Input.vue'
+import Card from './components/Card.vue'
+import NameList from './components/NameList.vue'
+import ChildStyles from './components/ChildStyles.vue'
+import TabA from './components/TabA.vue'
+import TabB from './components/TabB.vue'
+import TabC from './components/TabC.vue'
+import Portal from './components/Portal.vue'
 
-// export default {
-//   name: 'App',
-//   components: {
-//     HelloWorld
-//   }
-// }
 export default {
   name: 'App',
+  components: {
+    Greet,
+    Article,
+    ComponentC,
+    Popup,
+    Input,
+    Card,
+    NameList,
+    ChildStyles,
+    TabA,
+    TabB,
+    TabC,
+    Portal,
+  },
   data() {
     return {
-      num: 0,
-      display: true,
-      showElement: true,
-
-      names: ['Bruce', 'Clack', 'Diana'],
-      fullNames: [
-        { first: 'Bruce', last: 'Wayne' },
-        { first: 'Clack', last: 'Kent' },
-        { first: 'Princess', last: 'Diana' },
-      ],
-      actors: [
-        { 
-          name: 'Christian Bale', 
-          movies: ['Batman', 'The Prestige'], 
-        },
-        { 
-          name: 'Di Caprio', 
-          movies: ['Titanic', 'Inception'],
-        },
-      ],
-      myInfo: { first: 'Bruce', last: 'Wayne' },
-
-      name: "<b>Spiderman</b>",
-      headingID: "heading",
-      isDisabled: false,
-      status: "danger",
-      isPromoted: true,
-      isSoldout: true,
-      highlightColor: "orange",
-      headerSize: 50,
-      headerStyleObject: {
-        color: 'orange',
-        fontSize: '50px',
-        padding: '20px'
-      },
-      baseStyleObject: {
-        fontSize: '50px',
-        padding: '10px',
-      },
-      successStyleObject: {
-        color: 'green',
-        backgroundColor: 'lightgreen',
-        border: '1px solid green',
-        padding: '20px',
-      },
-      dangerStyleObject: {
-        color: 'darkred',
-        backgroundColor: 'red',
-        border: '1px solid darkred',
-      },
+      name: 'Vishwas',
+      channel: 'Codevolution',
+      showPopup: false,
+      username: '',
+      friends: ['Chandler', 'Joey', 'Monica'],
+      activeTab: 'TabA',
     }
-  }
+  },
+  methods: {
+    closePopup(name) {
+      this.showPopup = false
+      console.log('name', name)
+    },
+  },
+  provide() {
+    return {
+      userName: this.name,
+    }
+  },
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -127,19 +138,7 @@ export default {
   margin-top: 60px;
 }
 
-.underline {
-  text-decoration: underline;
-}
-
-.promoted {
-  font-style: italic;
-}
-
-.new {
-  color: olivedrab;
-}
-
-.sold-out {
-  color: red;
+h4 {
+  color: orange;
 }
 </style>
